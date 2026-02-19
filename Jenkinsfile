@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                container('node') {
+                container('nodejs') {
                     sh "pnpm install"
                     sh "pnpm run build"
                 }
@@ -28,7 +28,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                container('node') {
+                container('nodejs') {
                     sh "buildah bud --tls-verify=false -t ${REGISTRY}/${PROJECT}:${TAG} -f Dockerfile ."
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                container('node') {
+                container('nodejs') {
                     withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh "buildah login --tls-verify=false -u \$USER -p \$PASS ${REGISTRY}"
                         sh "buildah push --tls-verify=false ${REGISTRY}/${PROJECT}:${TAG}"
@@ -53,7 +53,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                container('node') {
+                container('nodejs') {
                     sh "buildah rmi ${REGISTRY}/${PROJECT}:${TAG} || true"
                 }
             }
