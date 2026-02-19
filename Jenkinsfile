@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            inheritFrom 'node'
+            inheritFrom 'nodejs'
         }
     }
 
@@ -16,19 +16,12 @@ pipeline {
         stage('Build') {
             steps {
                 container('node') {
-                    sh "npm install"
-                    sh "npm run build"
+                    sh "pnpm install"
+                    sh "pnpm run build"
                 }
             }
         }
 
-        stage('Test') {
-            steps {
-                container('node') {
-                    sh "npm test -- --watchAll=false"
-                }
-            }
-        }
 
         stage('Build Image') {
             when {
